@@ -1,15 +1,17 @@
 {
   "name": "schedule",
-  "version": "0.0.1",
-  "description": "Цель приложения. Понимать, что делал субъект в произвольный момент времени.",
-  "main": "index.js",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www"
   },
-  "author": "",
-  "license": "UNLICENSED",
   "dependencies": {
-    "express": "^4.13.3",
-    "socket.io": "^1.3.7"
+    "body-parser": "~1.13.2",
+    "cookie-parser": "~1.3.5",
+    "debug": "~2.2.0",
+    "express": "~4.13.1",
+    "jade": "~1.11.0",
+    "morgan": "~1.6.1",
+    "serve-favicon": "~2.3.0"
   }
 }
