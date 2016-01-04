@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "webpack": "./node_modules/.bin/webpack ./public/js/bundle.js"
+    "webpack": "./node_modules/.bin/webpack ./public/js/bundle.js --display-error-details"
   },
   "dependencies": {
     "babel-preset-react": "^6.3.13",
