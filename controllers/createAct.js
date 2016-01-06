@@ -2,7 +2,6 @@ fs = require('fs');
 
 module.exports = function createAct(filename, socket) {
   var controller = function(data) {
-    console.log('createAct called.');
     fs.readFile(filename, function(err, content) {
       if (err) {
         console.error(err);
