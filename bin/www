@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+var path = require('path');
+var chokidar = require('chokidar');
+
 /**
  * Module dependencies.
  */
@@ -7,6 +10,11 @@
 var app = require('../app');
 var debug = require('debug')('schedule:server');
 var http = require('http');
+var controllers = {
+  createAct: require('../controllers/createAct'),
+  refreshActs: require('../controllers/refreshActs')
+};
+var ACTS_FILE = path.join(__dirname, '../storage/acts.json');
 
 /**
  * Get port from environment and store in Express.
@@ -20,10 +28,31 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+/**
+ * Create Websocket server.
+ */
+
 var io = require('socket.io')(server);
+
+var watcher = chokidar.watch(ACTS_FILE);
+watcher.on('change', function() {
+  controllers.refreshActs(ACTS_FILE, io);
+});
 
 io.on('connection', function (socket) {
   console.log('Client connected.');
+
+  socket.on('error', function(error) {
+    console.log('Error on websocket', error.stack);
+  });
+  socket.on('disconnect', function() {
+    console.log('Client disconnected.');
+  });
+
+  socket.on('createAct', controllers.createAct(ACTS_FILE, socket));
+
+  controllers.refreshActs(ACTS_FILE, socket);
 });
 
 /**
