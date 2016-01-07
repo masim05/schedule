@@ -15,6 +15,11 @@ var controllers = {
   refreshActs: require('../controllers/refreshActs')
 };
 var ACTS_FILE = path.join(__dirname, '../storage/acts.json');
+try {
+  var stat = fs.statSync(ACTS_FILE);
+} catch (error) {
+  fs.writeFileSync(ACTS_FILE, '[]');
+}
 
 /**
  * Get port from environment and store in Express.
