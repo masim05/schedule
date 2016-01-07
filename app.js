@@ -4,6 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var fs = require('fs');
+
+var ACTS_FILE = path.join(__dirname, 'storage/acts.json');
 
 var app = express();
 
@@ -18,6 +21,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// provide json activity log
+app.get('/log', function(req, res) {
+  fs.readFile(ACTS_FILE, function(err, content) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+
+    try {
+      acts = JSON.parse(content);
+    } catch (err) {
+      console.error(err.stack);
+      return;
+    }
+
+    return res.json(acts);
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
