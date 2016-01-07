@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fs = require('fs');
+var basicAuth = require('basic-auth-connect');
 
 var ACTS_FILE = path.join(__dirname, 'storage/acts.json');
 
@@ -15,6 +16,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
+app.use(basicAuth(
+  process.env.BASIC_AUTH_1_USER, process.env.BASIC_AUTH_1_PASSWORD
+));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
