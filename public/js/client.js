@@ -46,7 +46,8 @@ var Act = React.createClass({
 	render: function () {
 		return (
 			<div className="act">
-			{this.props.act.time} - {this.props.act.type} - {this.props.act.state}
+			{this.props.act.date} - {this.props.act.time} -
+			{this.props.act.type} - {this.props.act.state}
 			</div>
 		)
 	}
