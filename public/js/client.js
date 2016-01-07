@@ -36,7 +36,7 @@ var ActList = React.createClass({
 		});
 		return (
 			<div className="actList">
-			<h1>Acts</h1>
+			<h1>Недавние активности</h1>
 			{actNodes}
 			</div>
 		);
@@ -46,8 +46,7 @@ var Act = React.createClass({
 	render: function () {
 		return (
 			<div className="act">
-			{this.props.act.date} - {this.props.act.time} -
-			{this.props.act.type} - {this.props.act.state}
+			{this.props.act.date} - {this.props.act.time} - {this.props.act.type} - {this.props.act.state}
 			</div>
 		)
 	}
@@ -115,6 +114,7 @@ var ActForm = React.createClass({
 	  });
 		return (
 			<form className="actForm" onSubmit={this.handleSubmit}>
+				<h1>Новая активность</h1>
 				Дата:
 				<input
 					type="date"
