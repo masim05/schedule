@@ -46,7 +46,7 @@ var Act = React.createClass({
 	render: function () {
 		return (
 			<div className="act">
-			{this.props.act.date} - {this.props.act.time} - {this.props.act.type} - {this.props.act.state}
+			{this.props.act.date} - {this.props.act.time} - {this.props.act.type} - {this.props.act.state} - {this.props.act.comment}
 			</div>
 		)
 	}
@@ -73,6 +73,9 @@ var ActForm = React.createClass({
 	handleStateChange: function(e) {
 		this.setState({state: e.target.value});
 	},
+	handleCommentChange: function(e) {
+		this.setState({comment: e.target.value});
+	},
 	handleSubmit: function(e) {
 		e.preventDefault();
 		if (!this.state.date || !this.state.time || !this.state.type || !this.state.state){
@@ -85,7 +88,8 @@ var ActForm = React.createClass({
 			date: now.format('YYYY-MM-DD'),
 			time: now.format('HH:mm'),
 			type: 'Сон',
-			state: 'Начало'
+			state: 'Начало',
+			comment: ''
 		});
 	},
 	render: function () {
@@ -138,6 +142,14 @@ var ActForm = React.createClass({
 				<table><tbody>
 				{stateNodes}
 				</tbody></table>
+
+				Комментарий:
+				<input
+					type="text"
+					value={this.state.comment}
+					onChange={this.handleCommentChange}
+				/>
+				<br/>
 				<input type="submit" value="Добавить" />
 				</form>
 		)
