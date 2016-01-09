@@ -61,6 +61,24 @@ var ActForm = React.createClass({
 			state: 'Начало'
 		};
 	},
+	componentDidMount: function() {
+		var self = this;
+		var datetimeInterval = setInterval(function() {
+			var now = moment();
+			console.log('tick', now);
+			self.setState({
+				date: now.format('YYYY-MM-DD'),
+				time: now.format('HH:mm')
+			});
+		}, 2 * 60 * 1000);
+
+		self.setState({
+			datetimeInterval: datetimeInterval
+		});
+	},
+	componentWillUnmount: function() {
+		clearInterval(this.state.datetimeInterval);
+	},
 	handleDateChange: function(e) {
 		this.setState({date: e.target.value});
 	},
