@@ -2,3 +2,4 @@ node_modules
 .tags
 npm-debug.log
 storage/acts.json
+pm2.json
