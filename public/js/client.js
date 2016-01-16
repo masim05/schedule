@@ -180,6 +180,7 @@ var ActForm = React.createClass({
 				Комментарий:
 				<input
 					type="text"
+					className="form-control"
 					value={this.state.comment}
 					onChange={this.handleCommentChange}
 				/>
