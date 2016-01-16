@@ -128,24 +128,27 @@ var ActForm = React.createClass({
 		var self = this;
 		var typeNodes = ['Сон', 'Кормление', 'Активное бодрствование'].map(function(type, id) {
 			return (
-				<tr key={id}>
-				<td>
-				<input type="radio" name="type" value={type} id={'type-' + id}
+				<label
+					htmlFor={'type-' + id}
+					className={"btn btn-primary" + (self.state.type == type ? ' active' : '')}
+					key={id}>
+				{type}
+				<input type="radio" name="type" className="hidden" value={type} id={'type-' + id}
 				checked={self.state.type == type} onChange={self.handleTypeChange}/>
-				</td>
-				<td><label htmlFor={'type-' + id} >{type}</label></td>
-				</tr>
+				</label>
 			)
 		});
 		var stateNodes = ['Начало', 'Конец'].map(function(state, id) {
 			return (
-				<tr key={id}>
-				<td>
-				<input type="radio" name="state" value={state} id={'state-' + id}
-				checked={self.state.state == state} onChange={self.handleStateChange}/>
-				</td>
-				<td><label htmlFor={'state-' + id} >{state}</label></td>
-				</tr>
+				<label
+					htmlFor={'state-' + id}
+					className={"btn btn-primary" + (self.state.state == state ? ' active' : '')}
+					key={id}>
+				{state}
+				<input type="radio" name="state" className="hidden" value={state}
+				id={'state-' + id} checked={self.state.state == state}
+				onChange={self.handleStateChange}/>
+				</label>
 			)
 	  });
 		return (
@@ -167,15 +170,18 @@ var ActForm = React.createClass({
 					onChange={this.handleTimeChange}
 				/>
 				<br/>
-				Занятие:
-				<table><tbody>
-				{typeNodes}
-				</tbody></table>
 
-				Состояние:
-				<table><tbody>
+				Занятие:<br/>
+				<div className="btn-group" data-toggle="buttons">
+				{typeNodes}
+				</div>
+				<br/><br/>
+
+				Состояние:<br/>
+				<div className="btn-group" data-toggle="buttons">
 				{stateNodes}
-				</tbody></table>
+				</div>
+				<br/><br/>
 
 				Комментарий:
 				<input
