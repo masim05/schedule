@@ -1,5 +1,6 @@
 fs = require('fs');
 _ = require('lodash');
+crypto = require('crypto');
 
 module.exports = function createAct(filename, socket) {
   var controller = function(data) {
@@ -15,6 +16,10 @@ module.exports = function createAct(filename, socket) {
         console.error(err.stack);
         return;
       }
+
+      const sha1 = crypto.createHash('sha1');
+      sha1.update(JSON.stringify(data.act) + process.hrtime().join('-') + Date.now());
+      data.act.id = sha1.digest('hex');
 
       acts.unshift(data.act);
 

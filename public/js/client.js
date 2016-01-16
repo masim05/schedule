@@ -35,7 +35,7 @@ var ActList = React.createClass({
 		})
 		.map(function(act) {
 			return (
-				<Act act={act} key={act.start.date + act.start.time + act.type} />
+				<Act act={act} key={act.id} />
 			)
 		});
 		return (
