@@ -154,6 +154,7 @@ var ActForm = React.createClass({
 				Дата:
 				<input
 					type="date"
+					className="form-control"
 					value={this.state.date}
 					onChange={this.handleDateChange}
 				/>
@@ -161,6 +162,7 @@ var ActForm = React.createClass({
 				Время:
 				<input
 					type="time"
+					className="form-control"
 					value={this.state.time}
 					onChange={this.handleTimeChange}
 				/>
