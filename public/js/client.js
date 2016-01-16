@@ -29,7 +29,11 @@ var ActList = React.createClass({
 		}.bind(this));
 	},
 	render: function() {
-		var actNodes = this.state.acts.map(function(act) {
+		var actNodes = _
+		.filter(this.state.acts, function(act) {
+			return !!act.finish;
+		})
+		.map(function(act) {
 			return (
 				<Act act={act} key={act.start.date + act.start.time + act.type} />
 			)
@@ -44,9 +48,12 @@ var ActList = React.createClass({
 });
 var Act = React.createClass({
 	render: function () {
+		// TODO Remove ternary operator when data is consistent
 		var properties = [
 			<div className="col-md-2 col-xs-4" key="date">{this.props.act.start.date}</div>,
-			<div className="col-md-1 col-xs-2" key="time">{this.props.act.start.time}</div>,
+			<div className="col-md-1 col-xs-2" key="time">
+			{this.props.act.start.time}{this.props.act.finish ? ' - ' + this.props.act.finish.time : ''}
+			</div>,
 			<div className="col-md-4 col-xs-6" key="type">{this.props.act.type}</div>,
 		];
 		if (this.props.act.comment) {
