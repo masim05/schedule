@@ -5,6 +5,9 @@ var ActBox = React.createClass({
 		console.log('ActBox.render() called.');
 		return (
 			<div className="actBox">
+			<div className="page-header">
+				<h1>Активности</h1>
+			</div>
 			<ActForm />
 			<ActList />
 			</div>
@@ -36,7 +39,7 @@ var ActList = React.createClass({
 		});
 		return (
 			<div className="actList">
-			<h1>Недавние активности</h1>
+			<h3>Недавние активности</h3>
 			{actNodes}
 			</div>
 		);
@@ -136,7 +139,7 @@ var ActForm = React.createClass({
 	  });
 		return (
 			<form className="actForm" onSubmit={this.handleSubmit}>
-				<h1>Новая активность</h1>
+				<h3>Новая активность</h3>
 				Дата:
 				<input
 					type="date"
