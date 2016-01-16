@@ -34,7 +34,7 @@ var ActList = React.createClass({
 		console.log('ActList.render() called.');
 		var actNodes = this.state.acts.map(function(act) {
 			return (
-				<Act act={act} key={act.time + act.type + act.state} />
+				<Act act={act} key={act.date +act.time + act.type + act.state} />
 			)
 		});
 		return (
