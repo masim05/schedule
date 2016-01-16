@@ -47,9 +47,20 @@ var ActList = React.createClass({
 });
 var Act = React.createClass({
 	render: function () {
+		var properties = [
+			<div className="col-md-2 col-xs-4" key="date">{this.props.act.date}</div>,
+			<div className="col-md-1 col-xs-2" key="time">{this.props.act.time}</div>,
+			<div className="col-md-2 col-xs-3" key="type">{this.props.act.type}</div>,
+			<div className="col-md-2 col-xs-3" key="state">{this.props.act.state}</div>
+		];
+		if (this.props.act.comment) {
+			properties.push(
+				<div className="col-md-2 col-xs-12 light" key="comment">{this.props.act.comment}</div>
+			);
+		}
 		return (
-			<div className="act">
-			{this.props.act.date} - {this.props.act.time} - {this.props.act.type} - {this.props.act.state} - {this.props.act.comment}
+			<div className="act, row">
+				{properties}
 			</div>
 		)
 	}
