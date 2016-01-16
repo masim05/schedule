@@ -31,7 +31,7 @@ var ActList = React.createClass({
 	render: function() {
 		var actNodes = this.state.acts.map(function(act) {
 			return (
-				<Act act={act} key={act.date +act.time + act.type + act.state} />
+				<Act act={act} key={act.start.date + act.start.time + act.type} />
 			)
 		});
 		return (
@@ -45,10 +45,9 @@ var ActList = React.createClass({
 var Act = React.createClass({
 	render: function () {
 		var properties = [
-			<div className="col-md-2 col-xs-4" key="date">{this.props.act.date}</div>,
-			<div className="col-md-1 col-xs-2" key="time">{this.props.act.time}</div>,
-			<div className="col-md-2 col-xs-3" key="type">{this.props.act.type}</div>,
-			<div className="col-md-2 col-xs-3" key="state">{this.props.act.state}</div>
+			<div className="col-md-2 col-xs-4" key="date">{this.props.act.start.date}</div>,
+			<div className="col-md-1 col-xs-2" key="time">{this.props.act.start.time}</div>,
+			<div className="col-md-4 col-xs-6" key="type">{this.props.act.type}</div>,
 		];
 		if (this.props.act.comment) {
 			properties.push(
@@ -65,11 +64,12 @@ var Act = React.createClass({
 var ActForm = React.createClass({
 	getInitialState: function() {
 		var now = moment();
+
 		return {
-			date: now.format('YYYY-MM-DD'),
-			time: now.format('HH:mm'),
-			type: 'Сон',
-			state: 'Начало'
+			'act.start.date': now.format('YYYY-MM-DD'),
+			'act.start.time': now.format('HH:mm'),
+			'act.type': 'Сон',
+			'act.comment': ''
 		};
 	},
 	componentDidMount: function() {
@@ -77,8 +77,8 @@ var ActForm = React.createClass({
 		var datetimeInterval = setInterval(function() {
 			var now = moment();
 			self.setState({
-				date: now.format('YYYY-MM-DD'),
-				time: now.format('HH:mm')
+				'act.start.date': now.format('YYYY-MM-DD'),
+				'act.start.time': now.format('HH:mm')
 			});
 		}, 2 * 60 * 1000);
 
@@ -90,34 +90,48 @@ var ActForm = React.createClass({
 		clearInterval(this.state.datetimeInterval);
 	},
 	handleDateChange: function(e) {
-		this.setState({date: e.target.value});
+		this.setState({
+			'act.start.date': e.target.value
+		});
 	},
 	handleTimeChange: function(e) {
-		this.setState({time: e.target.value});
+		this.setState({
+			'act.start.time': e.target.value
+		});
 	},
 	handleTypeChange: function(e) {
-		this.setState({type: e.target.value});
-	},
-	handleStateChange: function(e) {
-		this.setState({state: e.target.value});
+		this.setState({
+			'act.type': e.target.value
+		});
 	},
 	handleCommentChange: function(e) {
-		this.setState({comment: e.target.value});
+		this.setState({
+			'act.comment': e.target.value
+		});
 	},
 	handleSubmit: function(e) {
 		e.preventDefault();
-		if (!this.state.date || !this.state.time || !this.state.type || !this.state.state){
-			return;
+		if (!this.state['act.start.date'] || !this.state['act.start.time'] ||
+				!this.state['act.type']){
+					return;
 		}
-		socket.emit('createAct', {act: this.state});
+		socket.emit('createAct', {
+			act: {
+				start: {
+					date: this.state['act.start.date'],
+					time: this.state['act.start.time']
+				},
+				type: this.state['act.type'],
+				comment: this.state['act.comment']
+			}
+		});
 
 		var now = moment();
 		this.setState({
-			date: now.format('YYYY-MM-DD'),
-			time: now.format('HH:mm'),
-			type: 'Сон',
-			state: 'Начало',
-			comment: ''
+			'act.start.date': now.format('YYYY-MM-DD'),
+			'act.start.time': now.format('HH:mm'),
+			'act.type': 'Сон',
+			'act.comment': ''
 		});
 	},
 	render: function () {
@@ -126,27 +140,14 @@ var ActForm = React.createClass({
 			return (
 				<label
 					htmlFor={'type-' + id}
-					className={"btn btn-primary" + (self.state.type == type ? ' active' : '')}
+					className={"btn btn-primary" + (self.state["act.type"] == type ? ' active' : '')}
 					key={id}>
 				{type}
 				<input type="radio" name="type" className="hidden" value={type} id={'type-' + id}
-				checked={self.state.type == type} onChange={self.handleTypeChange}/>
+				checked={self.state["act.type"] == type} onChange={self.handleTypeChange}/>
 				</label>
 			)
 		});
-		var stateNodes = ['Начало', 'Конец'].map(function(state, id) {
-			return (
-				<label
-					htmlFor={'state-' + id}
-					className={"btn btn-primary" + (self.state.state == state ? ' active' : '')}
-					key={id}>
-				{state}
-				<input type="radio" name="state" className="hidden" value={state}
-				id={'state-' + id} checked={self.state.state == state}
-				onChange={self.handleStateChange}/>
-				</label>
-			)
-	  });
 		return (
 			<form className="actForm" onSubmit={this.handleSubmit}>
 				<h3>Новая активность</h3>
@@ -154,7 +155,7 @@ var ActForm = React.createClass({
 				<input
 					type="date"
 					className="form-control"
-					value={this.state.date}
+					value={this.state["act.start.date"]}
 					onChange={this.handleDateChange}
 				/>
 				<br/>
@@ -162,7 +163,7 @@ var ActForm = React.createClass({
 				<input
 					type="time"
 					className="form-control"
-					value={this.state.time}
+					value={this.state["act.start.time"]}
 					onChange={this.handleTimeChange}
 				/>
 				<br/>
@@ -173,17 +174,11 @@ var ActForm = React.createClass({
 				</div>
 				<br/><br/>
 
-				Состояние:<br/>
-				<div className="btn-group" data-toggle="buttons">
-				{stateNodes}
-				</div>
-				<br/><br/>
-
 				Комментарий:
 				<input
 					type="text"
 					className="form-control"
-					value={this.state.comment}
+					value={this.state["act.comment"]}
 					onChange={this.handleCommentChange}
 				/>
 				<br/>

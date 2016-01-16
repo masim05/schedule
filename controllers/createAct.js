@@ -21,7 +21,7 @@ module.exports = function createAct(filename, socket) {
       // TODO implement binary search and inserting
       // for perfomance reasons when necessary.
       var sortedActs = _.sortBy(acts, function(act) {
-        return - new Date(act.date + ' ' + act.time).getTime();
+        return - new Date(act.start.date + ' ' + act.start.time).getTime();
       });
 
       fs.writeFile(filename, JSON.stringify(sortedActs), function (err) {
