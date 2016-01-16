@@ -2,7 +2,6 @@ var socket = undefined;
 
 var ActBox = React.createClass({
 	render: function() {
-		console.log('ActBox.render() called.');
 		return (
 			<div className="actBox">
 			<div className="page-header">
@@ -23,15 +22,13 @@ var ActList = React.createClass({
 	componentDidMount: function() {
 		socket = io.connect(document.location.href);
 		socket.on('error', function (error) {
-		  console.log('Error on socket', error);
+		  console.error('Error on socket', error);
 		});
 		socket.on('refreshActs', function(data) {
-			console.log('refreshActs', data);
 			this.setState(data);
 		}.bind(this));
 	},
 	render: function() {
-		console.log('ActList.render() called.');
 		var actNodes = this.state.acts.map(function(act) {
 			return (
 				<Act act={act} key={act.date +act.time + act.type + act.state} />
@@ -79,7 +76,6 @@ var ActForm = React.createClass({
 		var self = this;
 		var datetimeInterval = setInterval(function() {
 			var now = moment();
-			console.log('tick', now);
 			self.setState({
 				date: now.format('YYYY-MM-DD'),
 				time: now.format('HH:mm')
