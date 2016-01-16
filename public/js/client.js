@@ -185,7 +185,10 @@ var ActForm = React.createClass({
 					onChange={this.handleCommentChange}
 				/>
 				<br/>
-				<input type="submit" value="Добавить" />
+				<input
+					type="submit"
+					className="btn btn-lg btn-primary btn-block"
+					value="Добавить" />
 				</form>
 		)
 	}
