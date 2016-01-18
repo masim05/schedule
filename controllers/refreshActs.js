@@ -20,6 +20,6 @@ module.exports = function refreshActs(filename, emitable) {
         return;
       }
 
-      return emitable.emit('refreshActs', {acts: acts});
+      return emitable.emit('refreshActs', {acts: acts.slice(0, 20)});
     });
 };
