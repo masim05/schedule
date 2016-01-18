@@ -192,7 +192,7 @@ var ActForm = React.createClass({
 				<input
 					type="submit"
 					className="btn btn-lg btn-primary btn-block"
-					value="Добавить" />
+					value="Начать" />
 				</form>
 		)
 	}
