@@ -46,11 +46,46 @@ var ActList = React.createClass({
 });
 var Act = React.createClass({
 	getInitialState: function(){
-		return {};
+		var now = moment();
+		return {
+			'act.finish.date': now.format('YYYY-MM-DD'),
+			'act.finish.time': now.format('HH:mm')
+		};
+	},
+	componentDidMount: function() {
+		var self = this;
+		var datetimeInterval = setInterval(function() {
+			var now = moment();
+			self.setState({
+				'act.finish.date': now.format('YYYY-MM-DD'),
+				'act.finish.time': now.format('HH:mm')
+			});
+		}, 2 * 60 * 1000);
+
+		self.setState({
+			datetimeInterval: datetimeInterval
+		});
+	},
+	componentWillUnmount: function() {
+		clearInterval(this.state.datetimeInterval);
 	},
 	handleTimeChange: function(e) {
 		this.setState({
 			'act.finish.time': e.target.value
+		});
+	},
+	handleFinish: function(e) {
+		e.preventDefault();
+		var id = this.props.act.id;
+		var self = this;
+		socket.emit('finishAct', {
+			act: {
+				id: id,
+				finish: {
+					date: self.state["act.finish.date"],
+					time: self.state["act.finish.time"]
+				}
+			}
 		});
 	},
 	handleDelete: function(e) {
@@ -81,7 +116,7 @@ var Act = React.createClass({
 				<input
 					type="time"
 					className="form-control"
-//					value={this.state["act.finish.time"]}
+					value={this.state["act.finish.time"]}
 					onChange={this.handleTimeChange}
 					/>
 				</div>
@@ -93,6 +128,16 @@ var Act = React.createClass({
 		if (this.props.act.comment) {
 			properties.push(
 				<div className="col-md-2 col-xs-12 light" key="comment">{this.props.act.comment}</div>
+			);
+		}
+		if (!this.props.act.finish) {
+			properties.push(
+				<div className="col-md-1 col-xs-2" key="button">
+					<input
+						type="submit"
+						className="btn btn-primary btn-block"
+						value="F" />
+						</div>
 			);
 		}
 		return (

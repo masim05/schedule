@@ -13,6 +13,7 @@ var http = require('http');
 var controllers = {
   refreshActs: require('../controllers/refreshActs'),
   createAct: require('../controllers/createAct'),
+  finishAct: require('../controllers/finishAct'),
   deleteAct: require('../controllers/deleteAct')
 };
 var ACTS_FILE = path.join(__dirname, '../storage/acts.json');
@@ -56,6 +57,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('createAct', controllers.createAct(ACTS_FILE, socket));
+  socket.on('finishAct', controllers.finishAct(ACTS_FILE, socket));
   socket.on('deleteAct', controllers.deleteAct(ACTS_FILE, socket));
 
   controllers.refreshActs(ACTS_FILE, socket);
