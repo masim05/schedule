@@ -1,3 +1,4 @@
+// TODO remove global socket
 var socket = undefined;
 
 var ActBox = React.createClass({
@@ -44,15 +45,51 @@ var ActList = React.createClass({
 }
 });
 var Act = React.createClass({
+	getInitialState: function(){
+		return {};
+	},
+	handleTimeChange: function(e) {
+		this.setState({
+			'act.finish.time': e.target.value
+		});
+	},
+	handleDelete: function(e) {
+		e.preventDefault();
+		var id = this.props.act.id;
+		socket.emit('deleteAct', {
+			act: {
+				id: id
+			}
+		});
+	},
 	render: function () {
 		// TODO Remove ternary operator when data is consistent
 		var properties = [
 			<div className="col-md-2 col-xs-4" key="date">{this.props.act.start.date}</div>,
-			<div className="col-md-1 col-xs-2" key="time">
-			{this.props.act.start.time}{this.props.act.finish ? ' - ' + this.props.act.finish.time : ''}
-			</div>,
-			<div className="col-md-4 col-xs-6" key="type">{this.props.act.type}</div>,
+
 		];
+		if (this.props.act.finish) {
+			properties.push(
+				<div className="col-md-1 col-xs-2" key="time">
+				{this.props.act.start.time} - {this.props.act.finish.time}
+				</div>
+			)
+		} else {
+			properties.push(
+				<div className="col-md-1 col-xs-2" key="time">
+				{this.props.act.start.time} -
+				<input
+					type="time"
+					className="form-control"
+//					value={this.state["act.finish.time"]}
+					onChange={this.handleTimeChange}
+					/>
+				</div>
+			)
+		}
+		properties.push(
+			<div className="col-md-4 col-xs-6" key="type">{this.props.act.type}</div>
+		);
 		if (this.props.act.comment) {
 			properties.push(
 				<div className="col-md-2 col-xs-12 light" key="comment">{this.props.act.comment}</div>
@@ -60,7 +97,17 @@ var Act = React.createClass({
 		}
 		return (
 			<div className="act, row">
+				<form className="actForm" onSubmit={this.handleFinish}>
 				{properties}
+				</form>
+				<form className="actForm" onSubmit={this.handleDelete}>
+				<div className="col-md-1 col-xs-2" key="type">
+					<input
+						type="submit"
+						className="btn btn-primary btn-block"
+						value="D" />
+						</div>
+				</form>
 			</div>
 		)
 	}

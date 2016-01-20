@@ -11,8 +11,9 @@ var app = require('../app');
 var debug = require('debug')('schedule:server');
 var http = require('http');
 var controllers = {
+  refreshActs: require('../controllers/refreshActs'),
   createAct: require('../controllers/createAct'),
-  refreshActs: require('../controllers/refreshActs')
+  deleteAct: require('../controllers/deleteAct')
 };
 var ACTS_FILE = path.join(__dirname, '../storage/acts.json');
 try {
@@ -55,6 +56,7 @@ io.on('connection', function (socket) {
   });
 
   socket.on('createAct', controllers.createAct(ACTS_FILE, socket));
+  socket.on('deleteAct', controllers.deleteAct(ACTS_FILE, socket));
 
   controllers.refreshActs(ACTS_FILE, socket);
 });
