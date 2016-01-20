@@ -29,10 +29,7 @@ var ActList = React.createClass({
 		}.bind(this));
 	},
 	render: function() {
-		var actNodes = _
-		.filter(this.state.acts, function(act) {
-			return !!act.finish;
-		})
+		var actNodes = this.state.acts
 		.map(function(act) {
 			return (
 				<Act act={act} key={act.id} />
