@@ -5,7 +5,7 @@
       "exec_mode": "fork_mode",
       "env": {
         "BASIC_AUTH_1_USER": "u",
-        "BASIC_AUTH_1_PASSWORD": "p",
+        "BASIC_AUTH_1_PASSWORD": "p"
     }
   }
 ]
