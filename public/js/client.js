@@ -99,19 +99,18 @@ var Act = React.createClass({
 	},
 	render: function () {
 		// TODO Remove ternary operator when data is consistent
-		var properties = [
-			<div className="col-md-2 col-xs-4" key="date">{this.props.act.start.date}</div>,
-
+		var topProperties = [
+			<div className="col-md-2 col-xs-4" key="date">{this.props.act.start.date}</div>
 		];
 		if (this.props.act.finish) {
-			properties.push(
-				<div className="col-md-1 col-xs-2" key="time">
+			topProperties.push(
+				<div className="col-md-6 col-xs-6" key="time">
 				{this.props.act.start.time} - {this.props.act.finish.time}
 				</div>
 			)
 		} else {
-			properties.push(
-				<div className="col-md-1 col-xs-2" key="time">
+			topProperties.push(
+				<div className="col-md-6 col-xs-6" key="time">
 				{this.props.act.start.time} -
 				<input
 					type="time"
@@ -122,36 +121,42 @@ var Act = React.createClass({
 				</div>
 			)
 		}
-		properties.push(
-			<div className="col-md-4 col-xs-6" key="type">{this.props.act.type}</div>
-		);
-		if (this.props.act.comment) {
-			properties.push(
-				<div className="col-md-2 col-xs-12 light" key="comment">{this.props.act.comment}</div>
-			);
-		}
 		if (!this.props.act.finish) {
-			properties.push(
+			topProperties.push(
 				<div className="col-md-1 col-xs-2" key="button">
 					<input
 						type="submit"
-						className="btn btn-primary btn-block"
+						className="btn btn-primary btn-block btn-xs"
 						value="F" />
 						</div>
 			);
 		}
+		var topLine = <div className="row">
+		{topProperties}
+		</div>;
+
+		var bottomProperties = [
+			<div className="col-md-2 col-xs-4" key="type">{this.props.act.type}</div>,
+			<div className="col-md-6 col-xs-6 light" key="comment">{this.props.act.comment}</div>,
+			<div className="col-md-1 col-xs-2" key="button">
+				<input
+					type="submit"
+					className="btn btn-primary btn-block btn-xs"
+					value="D" />
+					</div>
+		];
+
+		var bottomLine = <div className="row">
+		{bottomProperties}
+		</div>;
+
 		return (
-			<div className="act, row">
+			<div className="act">
 				<form className="actForm" onSubmit={this.handleFinish}>
-				{properties}
+				{topLine}
 				</form>
 				<form className="actForm" onSubmit={this.handleDelete}>
-				<div className="col-md-1 col-xs-2" key="type">
-					<input
-						type="submit"
-						className="btn btn-primary btn-block"
-						value="D" />
-						</div>
+				{bottomLine}
 				</form>
 			</div>
 		)
