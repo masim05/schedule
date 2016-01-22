@@ -132,19 +132,27 @@ var Act = React.createClass({
 			);
 		}
 		var topLine = <div className="row">
-		{topProperties}
+			<div id="equalheight">
+			{topProperties}
+			</div>
 		</div>;
 
 		var bottomProperties = [
-			<div className="col-md-2 col-xs-4" key="type">{this.props.act.type}</div>,
-			<div className="col-md-6 col-xs-6 light" key="comment">{this.props.act.comment}</div>,
+			<div className="col-md-2 col-xs-4" key="type">{this.props.act.type}</div>
+		];
+		if (this.props.act.comment) {
+			bottomProperties.push(
+				<div className="col-md-6 col-xs-6 light" key="comment">{this.props.act.comment}</div>
+			);
+		};
+		bottomProperties.push(
 			<div className="col-md-1 col-xs-2" key="button">
 				<input
 					type="submit"
 					className="btn btn-primary btn-block btn-xs"
 					value="D" />
 					</div>
-		];
+		);
 
 		var bottomLine = <div className="row">
 		{bottomProperties}
@@ -158,6 +166,7 @@ var Act = React.createClass({
 				<form className="actForm" onSubmit={this.handleDelete}>
 				{bottomLine}
 				</form>
+				<hr/>
 			</div>
 		)
 	}
