@@ -1,3 +1,4 @@
+// TODO remove global socket
 var socket = undefined;
 
 var ActBox = React.createClass({
@@ -29,9 +30,10 @@ var ActList = React.createClass({
 		}.bind(this));
 	},
 	render: function() {
-		var actNodes = this.state.acts.map(function(act) {
+		var actNodes = this.state.acts
+		.map(function(act) {
 			return (
-				<Act act={act} key={act.date +act.time + act.type + act.state} />
+				<Act act={act} key={act.id} />
 			)
 		});
 		return (
@@ -43,33 +45,11 @@ var ActList = React.createClass({
 }
 });
 var Act = React.createClass({
-	render: function () {
-		var properties = [
-			<div className="col-md-2 col-xs-4" key="date">{this.props.act.date}</div>,
-			<div className="col-md-1 col-xs-2" key="time">{this.props.act.time}</div>,
-			<div className="col-md-2 col-xs-3" key="type">{this.props.act.type}</div>,
-			<div className="col-md-2 col-xs-3" key="state">{this.props.act.state}</div>
-		];
-		if (this.props.act.comment) {
-			properties.push(
-				<div className="col-md-2 col-xs-12 light" key="comment">{this.props.act.comment}</div>
-			);
-		}
-		return (
-			<div className="act, row">
-				{properties}
-			</div>
-		)
-	}
-});
-var ActForm = React.createClass({
-	getInitialState: function() {
+	getInitialState: function(){
 		var now = moment();
 		return {
-			date: now.format('YYYY-MM-DD'),
-			time: now.format('HH:mm'),
-			type: 'Сон',
-			state: 'Начало'
+			'act.finish.date': now.format('YYYY-MM-DD'),
+			'act.finish.time': now.format('HH:mm')
 		};
 	},
 	componentDidMount: function() {
@@ -77,8 +57,124 @@ var ActForm = React.createClass({
 		var datetimeInterval = setInterval(function() {
 			var now = moment();
 			self.setState({
-				date: now.format('YYYY-MM-DD'),
-				time: now.format('HH:mm')
+				'act.finish.date': now.format('YYYY-MM-DD'),
+				'act.finish.time': now.format('HH:mm')
+			});
+		}, 2 * 60 * 1000);
+
+		self.setState({
+			datetimeInterval: datetimeInterval
+		});
+	},
+	componentWillUnmount: function() {
+		clearInterval(this.state.datetimeInterval);
+	},
+	handleTimeChange: function(e) {
+		this.setState({
+			'act.finish.time': e.target.value
+		});
+	},
+	handleFinish: function(e) {
+		e.preventDefault();
+		var id = this.props.act.id;
+		var self = this;
+		socket.emit('finishAct', {
+			act: {
+				id: id,
+				finish: {
+					date: self.state["act.finish.date"],
+					time: self.state["act.finish.time"]
+				}
+			}
+		});
+	},
+	handleDelete: function(e) {
+		e.preventDefault();
+		var id = this.props.act.id;
+		socket.emit('deleteAct', {
+			act: {
+				id: id
+			}
+		});
+	},
+	render: function () {
+		// TODO Remove ternary operator when data is consistent
+		var properties = [
+			<div className="col-md-2 col-xs-4" key="date">{this.props.act.start.date}</div>,
+
+		];
+		if (this.props.act.finish) {
+			properties.push(
+				<div className="col-md-1 col-xs-2" key="time">
+				{this.props.act.start.time} - {this.props.act.finish.time}
+				</div>
+			)
+		} else {
+			properties.push(
+				<div className="col-md-1 col-xs-2" key="time">
+				{this.props.act.start.time} -
+				<input
+					type="time"
+					className="form-control"
+					value={this.state["act.finish.time"]}
+					onChange={this.handleTimeChange}
+					/>
+				</div>
+			)
+		}
+		properties.push(
+			<div className="col-md-4 col-xs-6" key="type">{this.props.act.type}</div>
+		);
+		if (this.props.act.comment) {
+			properties.push(
+				<div className="col-md-2 col-xs-12 light" key="comment">{this.props.act.comment}</div>
+			);
+		}
+		if (!this.props.act.finish) {
+			properties.push(
+				<div className="col-md-1 col-xs-2" key="button">
+					<input
+						type="submit"
+						className="btn btn-primary btn-block"
+						value="F" />
+						</div>
+			);
+		}
+		return (
+			<div className="act, row">
+				<form className="actForm" onSubmit={this.handleFinish}>
+				{properties}
+				</form>
+				<form className="actForm" onSubmit={this.handleDelete}>
+				<div className="col-md-1 col-xs-2" key="type">
+					<input
+						type="submit"
+						className="btn btn-primary btn-block"
+						value="D" />
+						</div>
+				</form>
+			</div>
+		)
+	}
+});
+var ActForm = React.createClass({
+	getInitialState: function() {
+		var now = moment();
+
+		return {
+			'act.start.date': now.format('YYYY-MM-DD'),
+			'act.start.time': now.format('HH:mm'),
+			'act.type': 'Сон',
+			'act.comment': ''
+		};
+	},
+	componentDidMount: function() {
+		var self = this;
+		var datetimeInterval = setInterval(function() {
+			var now = moment();
+			self.setState({
+				'act.start.date': now.format('YYYY-MM-DD'),
+				'act.start.time': now.format('HH:mm')
 			});
 		}, 2 * 60 * 1000);
 
@@ -90,34 +186,48 @@ var ActForm = React.createClass({
 		clearInterval(this.state.datetimeInterval);
 	},
 	handleDateChange: function(e) {
-		this.setState({date: e.target.value});
+		this.setState({
+			'act.start.date': e.target.value
+		});
 	},
 	handleTimeChange: function(e) {
-		this.setState({time: e.target.value});
+		this.setState({
+			'act.start.time': e.target.value
+		});
 	},
 	handleTypeChange: function(e) {
-		this.setState({type: e.target.value});
-	},
-	handleStateChange: function(e) {
-		this.setState({state: e.target.value});
+		this.setState({
+			'act.type': e.target.value
+		});
 	},
 	handleCommentChange: function(e) {
-		this.setState({comment: e.target.value});
+		this.setState({
+			'act.comment': e.target.value
+		});
 	},
 	handleSubmit: function(e) {
 		e.preventDefault();
-		if (!this.state.date || !this.state.time || !this.state.type || !this.state.state){
-			return;
+		if (!this.state['act.start.date'] || !this.state['act.start.time'] ||
+				!this.state['act.type']){
+					return;
 		}
-		socket.emit('createAct', {act: this.state});
+		socket.emit('createAct', {
+			act: {
+				start: {
+					date: this.state['act.start.date'],
+					time: this.state['act.start.time']
+				},
+				type: this.state['act.type'],
+				comment: this.state['act.comment']
+			}
+		});
 
 		var now = moment();
 		this.setState({
-			date: now.format('YYYY-MM-DD'),
-			time: now.format('HH:mm'),
-			type: 'Сон',
-			state: 'Начало',
-			comment: ''
+			'act.start.date': now.format('YYYY-MM-DD'),
+			'act.start.time': now.format('HH:mm'),
+			'act.type': 'Сон',
+			'act.comment': ''
 		});
 	},
 	render: function () {
@@ -126,27 +236,14 @@ var ActForm = React.createClass({
 			return (
 				<label
 					htmlFor={'type-' + id}
-					className={"btn btn-primary" + (self.state.type == type ? ' active' : '')}
+					className={"btn btn-primary" + (self.state["act.type"] == type ? ' active' : '')}
 					key={id}>
 				{type}
 				<input type="radio" name="type" className="hidden" value={type} id={'type-' + id}
-				checked={self.state.type == type} onChange={self.handleTypeChange}/>
+				checked={self.state["act.type"] == type} onChange={self.handleTypeChange}/>
 				</label>
 			)
 		});
-		var stateNodes = ['Начало', 'Конец'].map(function(state, id) {
-			return (
-				<label
-					htmlFor={'state-' + id}
-					className={"btn btn-primary" + (self.state.state == state ? ' active' : '')}
-					key={id}>
-				{state}
-				<input type="radio" name="state" className="hidden" value={state}
-				id={'state-' + id} checked={self.state.state == state}
-				onChange={self.handleStateChange}/>
-				</label>
-			)
-	  });
 		return (
 			<form className="actForm" onSubmit={this.handleSubmit}>
 				<h3>Новая активность</h3>
@@ -154,7 +251,7 @@ var ActForm = React.createClass({
 				<input
 					type="date"
 					className="form-control"
-					value={this.state.date}
+					value={this.state["act.start.date"]}
 					onChange={this.handleDateChange}
 				/>
 				<br/>
@@ -162,7 +259,7 @@ var ActForm = React.createClass({
 				<input
 					type="time"
 					className="form-control"
-					value={this.state.time}
+					value={this.state["act.start.time"]}
 					onChange={this.handleTimeChange}
 				/>
 				<br/>
@@ -173,24 +270,18 @@ var ActForm = React.createClass({
 				</div>
 				<br/><br/>
 
-				Состояние:<br/>
-				<div className="btn-group" data-toggle="buttons">
-				{stateNodes}
-				</div>
-				<br/><br/>
-
 				Комментарий:
 				<input
 					type="text"
 					className="form-control"
-					value={this.state.comment}
+					value={this.state["act.comment"]}
 					onChange={this.handleCommentChange}
 				/>
 				<br/>
 				<input
 					type="submit"
 					className="btn btn-lg btn-primary btn-block"
-					value="Добавить" />
+					value="Начать" />
 				</form>
 		)
 	}
