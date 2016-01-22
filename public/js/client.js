@@ -6,7 +6,7 @@ var ActBox = React.createClass({
 		return (
 			<div className="actBox">
 			<div className="page-header">
-			<h1>Baby scheduler v0.1.0</h1>
+			<h1>Baby scheduler v0.1.1</h1>
 			</div>
 			<ActForm />
 			<ActList />
