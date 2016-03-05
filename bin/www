@@ -19,7 +19,8 @@ var controllers = {
 var ACTS_FILE = path.join(__dirname, '../storage/acts.json');
 try {
   var stat = fs.statSync(ACTS_FILE);
-} catch (error) {
+}
+catch (error) {
   fs.writeFileSync(ACTS_FILE, '[]');
 }
 
@@ -42,17 +43,17 @@ var server = http.createServer(app);
 var io = require('socket.io')(server);
 
 var watcher = chokidar.watch(ACTS_FILE);
-watcher.on('change', function() {
+watcher.on('change', function () {
   controllers.refreshActs(ACTS_FILE, io);
 });
 
 io.on('connection', function (socket) {
   console.log('Client connected.');
 
-  socket.on('error', function(error) {
+  socket.on('error', function (error) {
     console.log('Error on websocket', error.stack);
   });
-  socket.on('disconnect', function() {
+  socket.on('disconnect', function () {
     console.log('Client disconnected.');
   });
 
