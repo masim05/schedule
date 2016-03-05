@@ -25,6 +25,7 @@ var ScheduleBox = React.createClass({
     this.socket.close();
   },
   render: function () {
+    var scheduleBox = this;
     var menuItems = [
       {name: 'Acts', href: '/acts'},
       {name: 'Stats', href: '/stats'}
@@ -37,7 +38,7 @@ var ScheduleBox = React.createClass({
         <div id="main-menu" className="navbar navbar-default" role="navigation">
           <div className="container-fluid">
             <div className="collapse navbar-collapse navbar-menubuilder">
-              <MainMenuItems items={menuItems} active={0}/>
+              <MainMenuItems items={menuItems} active={0} parent={scheduleBox}/>
             </div>
           </div>
         </div>
@@ -53,28 +54,30 @@ var MainMenuItems = React.createClass({
     };
   },
   handleMenuItemClick: function (index) {
-    var MainMenuItems = this;
+    var mainMenuItems = this;
 
     return function (e) {
       e.preventDefault();
 
-      MainMenuItems.setState({
+      console.log(mainMenuItems.parent);
+
+      mainMenuItems.setState({
         active: index
       });
     };
   },
   render: function () {
-    var MainMenuItems = this;
+    var mainMenuItems = this;
 
     var items = this.props.items.map(function (item, index) {
       var className = '';
-      if (index == MainMenuItems.state.active) {
+      if (index == mainMenuItems.state.active) {
         className = 'active';
       }
       return (
         <li className={className} key={index}>
           <a
-            onClick={MainMenuItems.handleMenuItemClick(index, MainMenuItems.props)}
+            onClick={mainMenuItems.handleMenuItemClick(index, mainMenuItems.props)}
             href={item.href}>
             {item.name}
           </a>
