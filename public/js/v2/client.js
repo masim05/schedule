@@ -42,6 +42,20 @@ var ScheduleBox = React.createClass({
       {name: 'Acts', href: '/acts'},
       {name: 'Stats', href: '/stats'}
     ];
+    var node;
+    if (scheduleBox.state.active) {
+      node = (
+        <div>
+          1111111
+        </div>
+      );
+    } else {
+      node = (
+        <div>
+          0000000
+        </div>
+      );
+    }
     return (
       <div className="schedule-box">
         <div className="page-header">
@@ -54,6 +68,8 @@ var ScheduleBox = React.createClass({
             </div>
           </div>
         </div>
+
+        {node}
       </div>
     )
   }
