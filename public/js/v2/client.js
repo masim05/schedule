@@ -1,4 +1,9 @@
 var ScheduleBox = React.createClass({
+  getInitialState: function () {
+    return {
+      active: 0
+    };
+  },
   componentDidMount: function () {
     function normalizeUrl(uri) {
       var parser = document.createElement('a');
@@ -20,6 +25,13 @@ var ScheduleBox = React.createClass({
     this.socket.on('error', function (error) {
       console.error(error);
     });
+
+    /*
+    var scheduleBox = this;
+    setInterval(function () {
+      console.log(scheduleBox.state);
+    }, 2000);
+    */
   },
   componentWillUnmount: function () {
     this.socket.close();
@@ -38,7 +50,7 @@ var ScheduleBox = React.createClass({
         <div id="main-menu" className="navbar navbar-default" role="navigation">
           <div className="container-fluid">
             <div className="collapse navbar-collapse navbar-menubuilder">
-              <MainMenuItems items={menuItems} active={0} parent={scheduleBox}/>
+              <MainMenuItems items={menuItems} active={scheduleBox.state.active} parent={scheduleBox}/>
             </div>
           </div>
         </div>
@@ -59,7 +71,9 @@ var MainMenuItems = React.createClass({
     return function (e) {
       e.preventDefault();
 
-      console.log(mainMenuItems.parent);
+      mainMenuItems.props.parent.setState({
+        active: index
+      });
 
       mainMenuItems.setState({
         active: index
