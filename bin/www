@@ -60,8 +60,9 @@ io.on('connection', function (socket) {
   socket.on('createAct', controllers.createAct(ACTS_FILE, socket));
   socket.on('finishAct', controllers.finishAct(ACTS_FILE, socket));
   socket.on('deleteAct', controllers.deleteAct(ACTS_FILE, socket));
+  socket.on('reqRefreshActs', controllers.refreshActs(ACTS_FILE, socket));
 
-  controllers.refreshActs(ACTS_FILE, socket);
+  controllers.refreshActs(ACTS_FILE, socket)();
 });
 
 /**
