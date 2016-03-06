@@ -1,8 +1,10 @@
 fs = require('fs');
 _ = require('lodash');
 
-module.exports = function finishAct(filename, socket) {
+module.exports = function finishAct(filename) {
   var controller = function (data) {
+    console.log('finishAct called.');
+
     fs.readFile(filename, function (err, content) {
       if (err) {
         console.error(err);
