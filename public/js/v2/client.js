@@ -1,40 +1,30 @@
-var socket;
+function normalizeUrl(uri) {
+  var parser = document.createElement('a');
+  parser.href = uri;
+  var out = parser.hostname;
+  if (parser.port != '80') {
+    out += ':' + parser.port;
+  }
+  return out;
+}
+
+var socket = io(normalizeUrl(document.location.href));
+socket.on('disconnect', function () {
+  console.log('disconnect fired.');
+});
+socket.on('connect', function () {
+  console.log('connect fired.');
+
+});
+socket.on('error', function (error) {
+  console.error(error);
+});
 
 var ScheduleBox = React.createClass({
   getInitialState: function () {
     return {
       active: 0
     };
-  },
-  componentDidMount: function () {
-    function normalizeUrl(uri) {
-      var parser = document.createElement('a');
-      parser.href = uri;
-      var out = parser.hostname;
-      if (parser.port != '80') {
-        out += ':' + parser.port;
-      }
-      return out;
-    }
-
-    socket = io(normalizeUrl(document.location.href));
-    socket.on('disconnect', function () {
-      console.log('disconnect fired.');
-    });
-    socket.on('connect', function () {
-      console.log('connect fired.');
-
-    });
-    socket.on('error', function (error) {
-      console.error(error);
-    });
-
-    /*
-    var scheduleBox = this;
-    setInterval(function () {
-      console.log(scheduleBox.state);
-    }, 2000);
-    */
   },
   componentWillUnmount: function () {
     socket.close();
