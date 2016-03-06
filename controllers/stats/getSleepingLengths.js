@@ -90,17 +90,13 @@ module.exports = function getSleepingLengths(filename, emitable) {
       }
 
       function extractLastDays(acts) {
-        return [
-          {
-            minutes: 740
-          },
-          {
-            minutes: 750
-          },
-          {
-            minutes: 760
-          }
-        ]
+        return [1, 2, 3].map(function (rollback) {
+          var time = moment().subtract(rollback, 'days');
+          var begin = time.clone().startOf('day');
+          var end = time.clone().endOf('day');
+
+          return extractStatsForPeriod(acts, begin, end);
+        });
       }
 
       function extractWeekAvegare(acts) {
