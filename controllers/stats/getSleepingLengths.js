@@ -28,10 +28,18 @@ module.exports = function getSleepingLengths(filename, emitable) {
 
       emitable.emit('sleepingLengths', out);
 
-      function extractToday(acts) {
+      function extractStatsForPeriod(acts, b, e) {
         var as = _.filter(acts, function (act) {
+          var begin = b.clone();
+          var end = e.clone();
 
           if (act.type != 'Сон') {
+            return false;
+          }
+
+          var start = moment(act.start.date + ' ' + act.start.time);
+
+          if (start.isAfter(end)) {
             return false;
           }
 
@@ -39,9 +47,9 @@ module.exports = function getSleepingLengths(filename, emitable) {
             return true;
           }
 
-          var begin = moment().startOf('day');
+          var finish = moment(act.finish.date + ' ' + act.finish.time);
 
-          if (moment(act.finish.date + ' ' + act.finish.time).isBefore(begin)) {
+          if (finish.isBefore(begin)) {
             return false;
           }
 
@@ -49,14 +57,19 @@ module.exports = function getSleepingLengths(filename, emitable) {
         });
 
         var minutes = as.reduce(function (total, act) {
-          var begin = moment().startOf('day'), end = moment();
+          var begin = b.clone();
+          var end = e.clone();
           var start = moment(act.start.date + ' ' + act.start.time);
+
           if (begin.isBefore(start)) {
             begin = start;
           }
 
           if (act.finish) {
-            end = moment(act.finish.date + ' ' + act.finish.time);
+            var finish = moment(act.finish.date + ' ' + act.finish.time);
+            if (finish.isBefore(end)) {
+              end = finish;
+            }
           }
 
           var current = Math.floor(moment.duration(end.diff(begin)).asMinutes());
@@ -69,24 +82,36 @@ module.exports = function getSleepingLengths(filename, emitable) {
         }
       }
 
+      function extractToday(acts) {
+        var begin = moment().startOf('day');
+        var end = moment();
+
+        return extractStatsForPeriod(acts, begin, end);
+      }
+
       function extractLastDays(acts) {
-        return [
-          {
-            minutes: 740
-          },
-          {
-            minutes: 750
-          },
-          {
-            minutes: 760
-          }
-        ]
+        return [1, 2, 3].map(function (rollback) {
+          var time = moment().subtract(rollback, 'days');
+          var begin = time.clone().startOf('day');
+          var end = time.clone().endOf('day');
+
+          return extractStatsForPeriod(acts, begin, end);
+        });
       }
 
       function extractWeekAvegare(acts) {
+        var total = [1, 2, 3, 4, 5, 6, 7].map(function (rollback) {
+          var time = moment().subtract(rollback, 'days');
+          var begin = time.clone().startOf('day');
+          var end = time.clone().endOf('day');
+
+          return extractStatsForPeriod(acts, begin, end);
+        }).reduce(function (total, duration) {
+          return total + duration.minutes;
+        }, 0);
         return {
-          minutes: 748
-        }
+          minutes: Math.floor(total / 7)
+        };
       }
     });
   };
