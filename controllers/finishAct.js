@@ -2,8 +2,8 @@ fs = require('fs');
 _ = require('lodash');
 
 module.exports = function finishAct(filename, socket) {
-  var controller = function(data) {
-    fs.readFile(filename, function(err, content) {
+  var controller = function (data) {
+    fs.readFile(filename, function (err, content) {
       if (err) {
         console.error(err);
         process.exit(1);
@@ -11,17 +11,20 @@ module.exports = function finishAct(filename, socket) {
 
       try {
         var acts = JSON.parse(content);
-      } catch (err) {
+      }
+      catch (err) {
         console.error(err.stack);
         return;
       }
 
-      var act = _.find(acts, function(a) {
+      var act = _.find(acts, function (a) {
         return a.id == data.act.id;
       });
 
-      if (!act) return;
-      
+      if (!act) {
+        return;
+      }
+
       act.finish = {
         date: data.act.finish.date,
         time: data.act.finish.time
