@@ -2,9 +2,11 @@ fs = require('fs');
 _ = require('lodash');
 crypto = require('crypto');
 
-module.exports = function deleteAct(filename, socket) {
-  var controller = function(data) {
-    fs.readFile(filename, function(err, content) {
+module.exports = function deleteAct(filename) {
+  var controller = function (data) {
+    console.log('deleteAct called.');
+
+    fs.readFile(filename, function (err, content) {
       if (err) {
         console.error(err);
         process.exit(1);
@@ -12,12 +14,13 @@ module.exports = function deleteAct(filename, socket) {
 
       try {
         var acts = JSON.parse(content);
-      } catch (err) {
+      }
+      catch (err) {
         console.error(err.stack);
         return;
       }
 
-      _.remove(acts, function(a) {
+      _.remove(acts, function (a) {
         return a.id == data.act.id;
       })
 
