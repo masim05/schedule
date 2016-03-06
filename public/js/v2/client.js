@@ -39,7 +39,7 @@ var ScheduleBox = React.createClass({
     if (scheduleBox.state.active) {
       node = (
         <div>
-          1111111
+          <StatsBox/>
         </div>
       );
     } else {
