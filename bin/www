@@ -44,7 +44,7 @@ var io = require('socket.io')(server);
 
 var watcher = chokidar.watch(ACTS_FILE);
 watcher.on('change', function () {
-  controllers.refreshActs(ACTS_FILE, io);
+  controllers.refreshActs(ACTS_FILE, io)();
 });
 
 io.on('connection', function (socket) {
