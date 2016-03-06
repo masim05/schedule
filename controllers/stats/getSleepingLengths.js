@@ -13,7 +13,7 @@ module.exports = function getSleepingLengths(filename, emitable) {
       }
 
       try {
-        acts = JSON.parse(content);
+        var acts = JSON.parse(content);
       }
       catch (err) {
         console.error(err.stack);
@@ -21,10 +21,56 @@ module.exports = function getSleepingLengths(filename, emitable) {
       }
 
       var out = {
-        today: {
-          minutes: 135
-        },
-        lastDays: [
+        today: extractToday(acts),
+        lastDays: extractLastDays(acts),
+        weekAverage: extractWeekAvegare(acts)
+      };
+
+      emitable.emit('sleepingLengths', out);
+
+      function extractToday(acts) {
+        var as = _.filter(acts, function (act) {
+
+          if (act.type != 'Сон') {
+            return false;
+          }
+
+          if (!act.finish) {
+            return true;
+          }
+
+          var begin = moment().startOf('day');
+
+          if (moment(act.finish.date + ' ' + act.finish.time).isBefore(begin)) {
+            return false;
+          }
+
+          return true;
+        });
+
+        var minutes = as.reduce(function (total, act) {
+          var begin = moment().startOf('day'), end = moment();
+          var start = moment(act.start.date + ' ' + act.start.time);
+          if (begin.isBefore(start)) {
+            begin = start;
+          }
+
+          if (act.finish) {
+            end = moment(act.finish.date + ' ' + act.finish.time);
+          }
+
+          var current = Math.floor(moment.duration(end.diff(begin)).asMinutes());
+
+          return total + current;
+        }, 0);
+
+        return {
+          minutes: minutes
+        }
+      }
+
+      function extractLastDays(acts) {
+        return [
           {
             minutes: 740
           },
@@ -34,10 +80,14 @@ module.exports = function getSleepingLengths(filename, emitable) {
           {
             minutes: 760
           }
-        ],
-        weekAverage: {}
-      };
-      emitable.emit('sleepingLengths', out);
+        ]
+      }
+
+      function extractWeekAvegare(acts) {
+        return {
+          minutes: 748
+        }
+      }
     });
   };
 
