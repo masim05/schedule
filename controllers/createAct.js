@@ -3,8 +3,8 @@ _ = require('lodash');
 crypto = require('crypto');
 
 module.exports = function createAct(filename, socket) {
-  var controller = function(data) {
-    fs.readFile(filename, function(err, content) {
+  var controller = function (data) {
+    fs.readFile(filename, function (err, content) {
       if (err) {
         console.error(err);
         process.exit(1);
@@ -12,7 +12,8 @@ module.exports = function createAct(filename, socket) {
 
       try {
         acts = JSON.parse(content);
-      } catch (err) {
+      }
+      catch (err) {
         console.error(err.stack);
         return;
       }
@@ -25,8 +26,8 @@ module.exports = function createAct(filename, socket) {
 
       // TODO implement binary search and inserting
       // for perfomance reasons when necessary.
-      var sortedActs = _.sortBy(acts, function(act) {
-        return - new Date(act.start.date + ' ' + act.start.time).getTime();
+      var sortedActs = _.sortBy(acts, function (act) {
+        return -new Date(act.start.date + ' ' + act.start.time).getTime();
       });
 
       fs.writeFile(filename, JSON.stringify(sortedActs), function (err) {
