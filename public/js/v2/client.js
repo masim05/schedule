@@ -55,8 +55,16 @@ var ScheduleBox = React.createClass({
         <div className="page-header">
           <h1>Baby scheduler v0.1.2</h1>
         </div>
-        <div id="main-menu" className="navbar navbar-default" role="navigation">
+        <div id="main-menu" className="navbar navbar-default " role="navigation">
           <div className="container-fluid">
+            <div className="navbar-header"><a className="navbar-brand" href="#">Menu</a>
+              <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
+                <span className="sr-only">Toggle navigation</span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+                <span className="icon-bar"></span>
+              </button>
+            </div>
             <div className="collapse navbar-collapse navbar-menubuilder">
               <MainMenuItems items={menuItems} active={scheduleBox.state.active} parent={scheduleBox}/>
             </div>
