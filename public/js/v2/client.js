@@ -424,7 +424,7 @@ var StatsBox = React.createClass({
 var SleepingLengths = React.createClass({
   getInitialState: function () {
     return {
-      day: {},
+      today: {},
       lastDays: [],
       weekAverage: {}
     };
@@ -483,7 +483,7 @@ var SleepingLengths = React.createClass({
         <div className="row">
           <div className="col-md-6 col-xs-8">Время сна за сегодня</div>
           <div className="col-md-2 col-xs-4">
-            {sleepingLengths.renderSleepingLength(sleepingLengths.state.day)}
+            {sleepingLengths.renderSleepingLength(sleepingLengths.state.today)}
           </div>
         </div>
         <div className="row">
