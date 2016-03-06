@@ -53,7 +53,7 @@ var ScheduleBox = React.createClass({
     return (
       <div className="schedule-box">
         <div className="page-header">
-          <h1>Baby scheduler v0.1.1</h1>
+          <h1>Baby scheduler v0.1.2</h1>
         </div>
         <div id="main-menu" className="navbar navbar-default" role="navigation">
           <div className="container-fluid">
