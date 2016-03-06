@@ -100,9 +100,18 @@ module.exports = function getSleepingLengths(filename, emitable) {
       }
 
       function extractWeekAvegare(acts) {
+        var total = [1, 2, 3, 4, 5, 6, 7].map(function (rollback) {
+          var time = moment().subtract(rollback, 'days');
+          var begin = time.clone().startOf('day');
+          var end = time.clone().endOf('day');
+
+          return extractStatsForPeriod(acts, begin, end);
+        }).reduce(function (total, duration) {
+          return total + duration.minutes;
+        }, 0);
         return {
-          minutes: 748
-        }
+          minutes: Math.floor(total / 7)
+        };
       }
     });
   };
