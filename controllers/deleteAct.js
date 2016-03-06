@@ -4,6 +4,8 @@ crypto = require('crypto');
 
 module.exports = function deleteAct(filename) {
   var controller = function (data) {
+    console.log('deleteAct called.');
+
     fs.readFile(filename, function (err, content) {
       if (err) {
         console.error(err);
