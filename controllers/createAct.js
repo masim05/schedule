@@ -2,8 +2,9 @@ fs = require('fs');
 _ = require('lodash');
 crypto = require('crypto');
 
-module.exports = function createAct(filename, socket) {
+module.exports = function createAct(filename) {
   var controller = function (data) {
+    console.log('createAct called.');
     fs.readFile(filename, function (err, content) {
       if (err) {
         console.error(err);
