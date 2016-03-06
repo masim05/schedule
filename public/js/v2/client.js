@@ -39,7 +39,7 @@ var ScheduleBox = React.createClass({
     if (scheduleBox.state.active) {
       node = (
         <div>
-          1111111
+          <StatsBox/>
         </div>
       );
     } else {
@@ -410,6 +410,96 @@ var Act = React.createClass({
         <hr/>
       </div>
     )
+  }
+});
+var StatsBox = React.createClass({
+  render: function () {
+    return (
+      <div id="stats-box">
+        <SleepingLengths/>
+      </div>
+    );
+  }
+});
+var SleepingLengths = React.createClass({
+  getInitialState: function () {
+    return {
+      today: {},
+      lastDays: [],
+      weekAverage: {}
+    };
+  },
+  componentDidMount: function () {
+    socket.on('sleepingLengths', function (data) {
+      this.setState(data);
+    }.bind(this));
+    socket.emit('getSleepingLengths');
+  },
+  componentWillUnmount: function () {
+    socket.removeListener('sleepingLengths');
+  },
+  renderSleepingLength: function (duration, key) {
+    if (!duration || !duration.minutes) {
+      return;
+    }
+    var hours = Math.floor(duration.minutes / 60);
+    var minutes = duration.minutes % 60;
+    if (typeof key == 'undefined') {
+      return (
+        <span>
+        {hours}ч{minutes}м
+      </span>
+      );
+    } else {
+      return (
+        <span key={key}>
+        {hours}ч{minutes}м
+      </span>
+      );
+    }
+  },
+  render: function () {
+    var sleepingLengths = this;
+
+    // thanks to http://stackoverflow.com/a/23619085
+    function intersperse(arr, sep) {
+      if (arr.length === 0) {
+        return [];
+      }
+
+      return arr.slice(1).reduce(function (xs, x) {
+        return xs.concat([sep, x]);
+      }, [arr[0]]);
+    }
+
+    var lastDaysNodes = this.state.lastDays.map(function (d, index) {
+      return sleepingLengths.renderSleepingLength(d, index);
+    });
+    lastDaysNodes = intersperse(lastDaysNodes, ', ');
+
+    return (
+      <div id="sleeping-lengths">
+        <h3>Статистика по сну</h3>
+        <div className="row">
+          <div className="col-md-6 col-xs-8">Время сна за сегодня</div>
+          <div className="col-md-2 col-xs-4">
+            {sleepingLengths.renderSleepingLength(sleepingLengths.state.today)}
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6 col-xs-8">Время сна за последние несколько суток</div>
+          <div className="col-md-2 col-xs-4">
+            {lastDaysNodes}
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6 col-xs-8">Среднее за последнюю неделю</div>
+          <div className="col-md-2 col-xs-4">
+            {sleepingLengths.renderSleepingLength(sleepingLengths.state.weekAverage)}
+          </div>
+        </div>
+      </div>
+    );
   }
 });
 
