@@ -57,7 +57,8 @@ var ScheduleBox = React.createClass({
         </div>
         <div id="main-menu" className="navbar navbar-default " role="navigation">
           <div className="container-fluid">
-            <div className="navbar-header"><a className="navbar-brand" href="#">Menu</a>
+            <div className="navbar-header">
+              <a className="navbar-brand" href="#">Menu</a>
               <button type="button" className="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
                 <span className="sr-only">Toggle navigation</span>
                 <span className="icon-bar"></span>
